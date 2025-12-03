@@ -1,0 +1,11 @@
+#login_container {
+    width: fit-content;
+    height: fit-content;
+    box-shadow: rgba(256, 256, 256, 0.35) 0px 5px 15px;
+    padding: 10vh;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 2vh;
+}
