@@ -1,11 +1,14 @@
 'use client'
 
+import './page.css'
+import Tracks_Select from '@/components/tracks_select_component/tracks_select';
 import { useState, useEffect } from "react"
 
 export default function PlaylistPage() {
 
     const [accessToken, setAccessToken] = useState(null);
     const [refreshToken, setRefreshToken] = useState(null);
+    const [selectedTracks, setSelectedTracks ] = useState([]);
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -25,7 +28,10 @@ export default function PlaylistPage() {
 
     return (
         <>
-            <h2>Hello Playlists!</h2>
+            {accessToken && <Tracks_Select accessToken={accessToken} 
+                                           refreshToken={refreshToken} 
+                                           selectedTracks={selectedTracks}
+                                           setSelectedTracks={setSelectedTracks}/>}
         </>
     )
 }

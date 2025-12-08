@@ -30,9 +30,16 @@ button {
   margin-right: 0.5vh;
 }
 
-button:hover {
+button:not(:disabled):hover {
   cursor: pointer;
   box-shadow: none;
   margin-bottom: 0;
   margin-right: 0;
+}
+
+input {
+  background-color: var(--white);
+  border-radius: 1vh;
+  color: var(--black);
+  padding-left: 1vh;
 }
