@@ -10,7 +10,7 @@ export default function Tracks_Select(props) {
     useEffect(() => {
         const fetchTracks = async (query, accessToken) => {
             const res = await fetch(
-                `/api/search/tracks?q=${encodeURIComponent(query)}&type=track&access_token=${accessToken}`
+                `/api/search?q=${encodeURIComponent(query)}&type=track&access_token=${accessToken}`
             );
 
             const result = await res.json();

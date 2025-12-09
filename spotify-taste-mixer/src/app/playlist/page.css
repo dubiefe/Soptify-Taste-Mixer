@@ -1,0 +1,10 @@
+fieldset {
+    border: 0.5vh solid var(--green);
+    border-radius: 2vh;
+    padding: 2vh;
+    width: 20%;
+}
+
+legend {
+    color: var(--green);
+}

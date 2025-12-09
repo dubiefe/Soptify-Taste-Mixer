@@ -28,10 +28,15 @@ export default function PlaylistPage() {
 
     return (
         <>
-            {accessToken && <Tracks_Select accessToken={accessToken} 
+            {accessToken && 
+                <fieldset>
+                    <legend> Tracks: </legend>
+                    <Tracks_Select accessToken={accessToken} 
                                            refreshToken={refreshToken} 
                                            selectedTracks={selectedTracks}
-                                           setSelectedTracks={setSelectedTracks}/>}
+                                           setSelectedTracks={setSelectedTracks}/>
+                </fieldset>
+            }
         </>
     )
 }
