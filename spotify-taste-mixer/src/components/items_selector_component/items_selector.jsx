@@ -8,26 +8,35 @@ export default function Items_Selector(props) {
     const [ resultSearch, setResultSearch ] = useState([]);
 
     useEffect(() => {
-        const fetchTracks = async (query, accessToken) => {
-            const res = await fetch(
-                `/api/search?q=${encodeURIComponent(query)}&type=track&access_token=${accessToken}`
-            );
-            const result = await res.json();
-            console.log(result.tracks.items);
-            setResultSearch(result.tracks.items);  
-        }
-
-        const fetchArtists = async (query, accessToken) => {
-            const res = await fetch(
-                `/api/search?q=${encodeURIComponent(query)}&type=artist&access_token=${accessToken}`
-            );
-            const result = await res.json();
-            console.log(result.artists.items);
-            setResultSearch(result.artists.items);  
+        async function searchWithRefresh(query, type, accessToken, refreshToken) {
+            let res = await fetch(`/api/search?q=${encodeURIComponent(query)}&type=${type}&access_token=${accessToken}`);
+            if (res.status === 401) { // expired token
+                const refreshRes = await fetch("/api/refresh", {
+                    method: "POST",
+                    body: JSON.stringify({ refresh_token: refreshToken })
+                });
+                const refreshData = await refreshRes.json();
+                const newAccessToken = refreshData.access_token;
+                // Update Local Storage + useState
+                localStorage.setItem("access_token", JSON.stringify(newAccessToken));
+                props.setAccessToken(newAccessToken)
+                // Rerun search with new token
+                res = await fetch(`/api/search?q=${encodeURIComponent(query)}&type=${type}&access_token=${newAccessToken}`);
+            }
+            return res.json();
         }
         
-        if (search != "" && props.type == "track") fetchTracks(search, props.accessToken);  
-        if (search != "" && props.type == "artist") fetchArtists(search, props.accessToken);  
+        async function runSearch () {
+            const result = await searchWithRefresh(search, props.type, props.accessToken, props.refreshToken)
+
+            if (search != "" && props.type == "track") setResultSearch(result.tracks.items);  
+            if (search != "" && props.type == "artist") setResultSearch(result.artists.items);
+            if (search != "" && props.type == "album") setResultSearch(result.albums.items);
+            if (search != "" && props.type == "show") setResultSearch(result.shows.items);
+        }
+
+        runSearch();
+
     }, [search]);
 
     function changeSearch(input) {
@@ -47,11 +56,13 @@ export default function Items_Selector(props) {
     }
 
     return (
-        <div id="tracks_select_container">
+        <div id="items_select_container">
             <div id='search'>
                 <button disabled>
                     {props.type == "track" && <img src="/music-note.svg" alt="tracks"/>}
                     {props.type == "artist" && <img src="/person-fill.svg" alt="artists"/>}
+                    {props.type == "album" && <img src="/music-note-list.svg" alt="albums"/>}
+                    {props.type == "show" && <img src="/mic-fill.svg" alt="shows"/>}
                 </button>
                 <input type="text" value={search} onChange={changeSearch} placeholder={"search for " + props.type + "s"}/>
                 {search && resultSearch && <div id='search_results'>

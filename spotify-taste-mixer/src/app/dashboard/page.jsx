@@ -10,6 +10,8 @@ export default function PlaylistPage() {
     const [ refreshToken, setRefreshToken ] = useState(null);
     const [ selectedTracks, setSelectedTracks ] = useState([]);
     const [ selectedArtists, setSelectedArtists ] = useState([]);
+    const [ selectedAlbums, setSelectedAlbums ] = useState([]);
+    const [ selectedShows, setSelectedShows ] = useState([]);
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -24,17 +26,18 @@ export default function PlaylistPage() {
         localStorage.setItem('refresh_token', JSON.stringify(refresh));
 
         // Clean url
-        window.history.replaceState({}, document.title, "/playlist");
+        window.history.replaceState({}, document.title, "/dashboard");
     }, []);
 
     return (
         <>
             {accessToken && 
-                <>
+                <div id='widgets_container'>
                     <fieldset>
                         <legend>&ensp;Tracks&ensp;</legend>
                         <Items_Selector type="track"
                                     accessToken={accessToken} 
+                                    setAccessToken={setAccessToken}
                                     refreshToken={refreshToken} 
                                     selectedItems={selectedTracks}
                                     setSelectedItems={setSelectedTracks}/>
@@ -43,11 +46,30 @@ export default function PlaylistPage() {
                         <legend>&ensp;Artists&ensp;</legend>
                         <Items_Selector type="artist"
                                     accessToken={accessToken} 
+                                    setAccessToken={setAccessToken}
                                     refreshToken={refreshToken} 
                                     selectedItems={selectedArtists}
                                     setSelectedItems={setSelectedArtists}/>
                     </fieldset>
-                </>
+                    <fieldset>
+                        <legend>&ensp;Albums&ensp;</legend>
+                        <Items_Selector type="album"
+                                    accessToken={accessToken} 
+                                    setAccessToken={setAccessToken}
+                                    refreshToken={refreshToken} 
+                                    selectedItems={selectedAlbums}
+                                    setSelectedItems={setSelectedAlbums}/>
+                    </fieldset>
+                    <fieldset>
+                        <legend>&ensp;Shows&ensp;</legend>
+                        <Items_Selector type="show"
+                                    accessToken={accessToken} 
+                                    setAccessToken={setAccessToken}
+                                    refreshToken={refreshToken} 
+                                    selectedItems={selectedShows}
+                                    setSelectedItems={setSelectedShows}/>
+                    </fieldset>
+                </div>
             }
         </>
     )
