@@ -1,0 +1,17 @@
+#navbar {
+    display: flex;
+    width: 100%;
+    justify-content: end;
+    align-items: center;
+    color: var(--green);
+    font-weight: bold;
+}
+
+#navbar a {
+    padding: 2vh;
+    cursor: pointer;
+}
+
+#navbar a:hover {
+    font-weight: bolder;
+}

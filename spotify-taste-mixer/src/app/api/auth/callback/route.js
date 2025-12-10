@@ -32,5 +32,5 @@ export async function GET(req) {
   }
 
   // Redirection vers le frontend avec tokens en query params
-  redirect("/playlist?access_token=" + data.access_token + "&refresh_token=" + data.refresh_token);
+  redirect("/dashboard?access_token=" + data.access_token + "&refresh_token=" + data.refresh_token);
 }

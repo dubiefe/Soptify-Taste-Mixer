@@ -35,6 +35,9 @@ button:not(:disabled):hover {
   box-shadow: none;
   margin-bottom: 0;
   margin-right: 0;
+  margin-top: 0.5vh;
+  margin-left: 0.5vh;
+  font-weight: bold;
 }
 
 input {
@@ -43,4 +46,33 @@ input {
   color: var(--black);
   padding-left: 1vh;
   height: 80%;
+}
+
+#login_container {
+    width: 50vh;
+    height: 50vh;
+    box-shadow: rgba(256, 256, 256, 0.35) 0px 5px 15px;
+    padding: 7vh;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 2vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+}
+
+#login_container img {
+  width: 25%;
+}
+
+#login_container h1 {
+  font-size: 2vh;
+}
+
+#login_container h2 {
+  font-size: 1.75vh;
 }
