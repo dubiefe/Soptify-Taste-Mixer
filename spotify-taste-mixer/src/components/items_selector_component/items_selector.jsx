@@ -1,5 +1,5 @@
 import './items_selector.css'
-import Track from '../track_component/track';
+import Item from '../item_component/item';
 import { useState, useEffect } from 'react'
 
 export default function Items_Selector(props) {
@@ -44,20 +44,22 @@ export default function Items_Selector(props) {
                 </button>
                 <input type="text" value={search} onChange={changeSearch} placeholder={"search for " + props.type + "s"}/>
                 {search && resultSearch && <div id='search_results'>
-                    {resultSearch.map((track) => {
-                        return <Track key={track.id} 
+                    {resultSearch.map((item) => {
+                        return <Item key={item.id} 
                                       disable="false"
-                                      onClick={() => {handleClickTrack(track)}}
-                                      track={track}/>
+                                      onClick={() => {handleClickTrack(item)}}
+                                      item={item}
+                                      type={props.type}/>
                     })}
                 </div>}
             </div>
             <div id='selected_tracks'>
-                {props.selectedItems && props.selectedItems.map((track) => {
-                    return <Track key={track.id} 
+                {props.selectedItems && props.selectedItems.map((item) => {
+                    return <Item key={item.id} 
                                   disable="true"
-                                  onClickRemove={() => {handleClickTrack(track)}}
-                                  track={track}/>
+                                  onClickRemove={() => {handleClickTrack(item)}}
+                                  item={item}
+                                  type={props.type}/>
                 })}
             </div>
         </div>

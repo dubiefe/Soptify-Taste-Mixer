@@ -1,4 +1,4 @@
-#track_container {
+#item_container {
     display: flex;
     align-items: center;
     gap: 1vh;
@@ -11,16 +11,16 @@
     position: relative;
 }
 
-#track_container[disable="false"]:hover {
+#item_container[disable="false"]:hover {
     border: 0.5vh solid var(--white);
     cursor: pointer;
 }
 
-#track_container img {
+#item_container img {
     height: 100%;
 }
 
-#track_container #remove_track {
+#item_container #remove_item {
     position: absolute;
     right: 0;
     cursor: pointer;
@@ -28,10 +28,10 @@
     padding: 2vh;
 }
 
-#track_container h2 {
+#item_container h2 {
     font-size: 1.4vh;
 }
 
-#track_container p {
+#item_container p {
     font-size: 1.2vh;
 }
