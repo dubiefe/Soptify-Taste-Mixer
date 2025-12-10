@@ -16,6 +16,7 @@ export default function Item(props) {
     return (
         <div id="item_container" onClick={props.onClick} disable={props.disable}>
             {props.type == "track" && <img src={props.item.album.images[0].url} alt="track_cover"/>}
+            {props.type == "artist" && <img src={props.item.images[0].url} alt="track_cover"/>}
             <div>
                 <h2>{props.item.name}</h2>
                 {props.type == "track" && <p>{formatArtists(props.item.artists)}</p>}

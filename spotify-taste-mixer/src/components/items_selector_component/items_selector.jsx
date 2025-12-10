@@ -16,8 +16,18 @@ export default function Items_Selector(props) {
             console.log(result.tracks.items);
             setResultSearch(result.tracks.items);  
         }
+
+        const fetchArtists = async (query, accessToken) => {
+            const res = await fetch(
+                `/api/search?q=${encodeURIComponent(query)}&type=artist&access_token=${accessToken}`
+            );
+            const result = await res.json();
+            console.log(result.artists.items);
+            setResultSearch(result.artists.items);  
+        }
         
         if (search != "" && props.type == "track") fetchTracks(search, props.accessToken);  
+        if (search != "" && props.type == "artist") fetchArtists(search, props.accessToken);  
     }, [search]);
 
     function changeSearch(input) {
@@ -41,6 +51,7 @@ export default function Items_Selector(props) {
             <div id='search'>
                 <button disabled>
                     {props.type == "track" && <img src="/music-note.svg" alt="tracks"/>}
+                    {props.type == "artist" && <img src="/person-fill.svg" alt="artists"/>}
                 </button>
                 <input type="text" value={search} onChange={changeSearch} placeholder={"search for " + props.type + "s"}/>
                 {search && resultSearch && <div id='search_results'>

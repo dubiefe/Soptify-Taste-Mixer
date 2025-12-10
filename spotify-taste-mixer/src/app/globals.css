@@ -42,4 +42,5 @@ input {
   border-radius: 1vh;
   color: var(--black);
   padding-left: 1vh;
+  height: 80%;
 }

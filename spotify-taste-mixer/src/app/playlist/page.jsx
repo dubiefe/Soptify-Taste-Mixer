@@ -6,9 +6,10 @@ import { useState, useEffect } from "react"
 
 export default function PlaylistPage() {
 
-    const [accessToken, setAccessToken] = useState(null);
-    const [refreshToken, setRefreshToken] = useState(null);
-    const [selectedTracks, setSelectedTracks ] = useState([]);
+    const [ accessToken, setAccessToken ] = useState(null);
+    const [ refreshToken, setRefreshToken ] = useState(null);
+    const [ selectedTracks, setSelectedTracks ] = useState([]);
+    const [ selectedArtists, setSelectedArtists ] = useState([]);
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -29,14 +30,24 @@ export default function PlaylistPage() {
     return (
         <>
             {accessToken && 
-                <fieldset>
-                    <legend>&ensp;Tracks&ensp;</legend>
-                    <Items_Selector type="track"
-                                   accessToken={accessToken} 
-                                   refreshToken={refreshToken} 
-                                   selectedItems={selectedTracks}
-                                   setSelectedItems={setSelectedTracks}/>
-                </fieldset>
+                <>
+                    <fieldset>
+                        <legend>&ensp;Tracks&ensp;</legend>
+                        <Items_Selector type="track"
+                                    accessToken={accessToken} 
+                                    refreshToken={refreshToken} 
+                                    selectedItems={selectedTracks}
+                                    setSelectedItems={setSelectedTracks}/>
+                    </fieldset>
+                    <fieldset>
+                        <legend>&ensp;Artists&ensp;</legend>
+                        <Items_Selector type="artist"
+                                    accessToken={accessToken} 
+                                    refreshToken={refreshToken} 
+                                    selectedItems={selectedArtists}
+                                    setSelectedItems={setSelectedArtists}/>
+                    </fieldset>
+                </>
             }
         </>
     )
