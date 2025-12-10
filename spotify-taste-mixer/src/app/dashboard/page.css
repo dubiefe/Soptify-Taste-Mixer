@@ -1,19 +1,41 @@
+#dashboard_container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#dashboard_container > button {
+    width: 5%;
+    height: 10vh;
+}
+
+#dashboard_container > button img {
+    height: 100%;
+}
+
+#dashboard_container > fieldset {
+    width: 25%;
+    height: 80vh;
+    margin-right: 10%;
+}
+
 #widgets_container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
     width: 40%;
-    height: 75vh;
+    height: 80vh;
     gap: 5%;
 }
 
 fieldset {
     border: 0.5vh solid var(--green);
     border-radius: 2vh;
+    box-sizing: border-box;
     padding: 2vh;
     width: 45%;
-    height: 50%;
+    height: 45%;
 }
 
 legend {

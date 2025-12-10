@@ -8,6 +8,9 @@ export default function Items_Selector(props) {
     const [ resultSearch, setResultSearch ] = useState([]);
 
     useEffect(() => {
+
+        if(search == "") return 
+
         async function searchWithRefresh(query, type, accessToken, refreshToken) {
             let res = await fetch(`/api/search?q=${encodeURIComponent(query)}&type=${type}&access_token=${accessToken}`);
             if (res.status === 401) { // expired token
@@ -29,10 +32,10 @@ export default function Items_Selector(props) {
         async function runSearch () {
             const result = await searchWithRefresh(search, props.type, props.accessToken, props.refreshToken)
 
-            if (search != "" && props.type == "track") setResultSearch(result.tracks.items);  
-            if (search != "" && props.type == "artist") setResultSearch(result.artists.items);
-            if (search != "" && props.type == "album") setResultSearch(result.albums.items);
-            if (search != "" && props.type == "show") setResultSearch(result.shows.items);
+            if (props.type == "track") setResultSearch(result.tracks.items);  
+            if (props.type == "artist") setResultSearch(result.artists.items);
+            if (props.type == "album") setResultSearch(result.albums.items);
+            if (props.type == "show") setResultSearch(result.shows.items);
         }
 
         runSearch();
