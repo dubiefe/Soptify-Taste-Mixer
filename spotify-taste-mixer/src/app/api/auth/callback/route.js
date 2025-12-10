@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
+import { redirect } from "next/navigation";
 
 const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
 const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
-const REDIRECT_URI = "http://127.0.0.1:3000/api/auth/callback";
+const REDIRECT_URI = process.env.REDIRECT_URI;
 
 export async function GET(req) {
   const url = new URL(req.url);
@@ -31,9 +32,5 @@ export async function GET(req) {
   }
 
   // Redirection vers le frontend avec tokens en query params
-  const redirectUrl = new URL("http://127.0.0.1:3000/playlist");
-  redirectUrl.searchParams.set("access_token", data.access_token);
-  redirectUrl.searchParams.set("refresh_token", data.refresh_token);
-
-  return NextResponse.redirect(redirectUrl.toString());
+  redirect("/playlist?access_token=" + data.access_token + "&refresh_token=" + data.refresh_token);
 }
