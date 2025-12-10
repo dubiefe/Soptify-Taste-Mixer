@@ -3,8 +3,10 @@ fieldset {
     border-radius: 2vh;
     padding: 2vh;
     width: 20%;
+    height: 35vh;
 }
 
 legend {
     color: var(--green);
+    font-weight: bold;
 }

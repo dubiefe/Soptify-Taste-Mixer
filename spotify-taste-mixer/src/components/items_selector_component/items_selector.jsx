@@ -1,8 +1,8 @@
-import './tracks_select.css'
+import './items_selector.css'
 import Track from '../track_component/track';
 import { useState, useEffect } from 'react'
 
-export default function Tracks_Select(props) {
+export default function Items_Selector(props) {
 
     const [ search, setSearch ] = useState("");
     const [ resultSearch, setResultSearch ] = useState([]);
@@ -12,28 +12,27 @@ export default function Tracks_Select(props) {
             const res = await fetch(
                 `/api/search?q=${encodeURIComponent(query)}&type=track&access_token=${accessToken}`
             );
-
             const result = await res.json();
             console.log(result.tracks.items);
             setResultSearch(result.tracks.items);  
         }
         
-        if (search != "") fetchTracks(search, props.accessToken);  
+        if (search != "" && props.type == "track") fetchTracks(search, props.accessToken);  
     }, [search]);
 
     function changeSearch(input) {
         setSearch(input.target.value);
     }
 
-    function handleClickTrack(track) {
-        if (!props.selectedTracks.includes(track)) {
+    function handleClickTrack(newItem) {
+        if (!props.selectedItems.includes(newItem)) {
             // add track
-            props.setSelectedTracks(prev => [...prev, track]);
+            props.setSelectedItems(prev => [...prev, newItem]);
             setSearch("");
             setResultSearch([]);
         } else {
             // remove track
-            props.setSelectedTracks(prev => prev.filter(item => item !== track))
+            props.setSelectedItems(prev => prev.filter(item => item !== newItem))
         }
     }
 
@@ -41,28 +40,24 @@ export default function Tracks_Select(props) {
         <div id="tracks_select_container">
             <div id='search'>
                 <button disabled>
-                    <img src="/music-note.svg" alt="tracks"/>
+                    {props.type == "track" && <img src="/music-note.svg" alt="tracks"/>}
                 </button>
-                <input type="text" value={search} onChange={changeSearch} placeholder='search for tracks'/>
+                <input type="text" value={search} onChange={changeSearch} placeholder={"search for " + props.type + "s"}/>
                 {search && resultSearch && <div id='search_results'>
                     {resultSearch.map((track) => {
                         return <Track key={track.id} 
                                       disable="false"
                                       onClick={() => {handleClickTrack(track)}}
-                                      img={track.album.images[0].url} 
-                                      title={track.name} 
-                                      artists={track.artists}/>
+                                      track={track}/>
                     })}
                 </div>}
             </div>
             <div id='selected_tracks'>
-                {props.selectedTracks && props.selectedTracks.map((track) => {
+                {props.selectedItems && props.selectedItems.map((track) => {
                     return <Track key={track.id} 
                                   disable="true"
                                   onClickRemove={() => {handleClickTrack(track)}}
-                                  img={track.album.images[0].url} 
-                                  title={track.name} 
-                                  artists={track.artists}/>
+                                  track={track}/>
                 })}
             </div>
         </div>

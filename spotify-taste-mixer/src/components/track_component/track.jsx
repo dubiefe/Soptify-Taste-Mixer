@@ -12,10 +12,10 @@ export default function Track(props) {
 
     return (
         <div id="track_container" onClick={props.onClick} disable={props.disable}>
-            <img src={props.img} alt="track_cover"/>
+            <img src={props.track.album.images[0].url} alt="track_cover"/>
             <div>
-                <h2>{props.title}</h2>
-                <p>{formatArtists(props.artists)}</p>
+                <h2>{props.track.name}</h2>
+                <p>{formatArtists(props.track.artists)}</p>
             </div>
             {props.disable == "true" && <img src="/x.svg" id='remove_track' alt='remove' onClick={props.onClickRemove}/>}
         </div>

@@ -1,7 +1,7 @@
 'use client'
 
 import './page.css'
-import Tracks_Select from '@/components/tracks_select_component/tracks_select';
+import Items_Selector from '@/components/items_selector_component/items_selector';
 import { useState, useEffect } from "react"
 
 export default function PlaylistPage() {
@@ -30,11 +30,12 @@ export default function PlaylistPage() {
         <>
             {accessToken && 
                 <fieldset>
-                    <legend> Tracks: </legend>
-                    <Tracks_Select accessToken={accessToken} 
-                                           refreshToken={refreshToken} 
-                                           selectedTracks={selectedTracks}
-                                           setSelectedTracks={setSelectedTracks}/>
+                    <legend>&ensp;Tracks&ensp;</legend>
+                    <Items_Selector type="track"
+                                   accessToken={accessToken} 
+                                   refreshToken={refreshToken} 
+                                   selectedItems={selectedTracks}
+                                   setSelectedItems={setSelectedTracks}/>
                 </fieldset>
             }
         </>

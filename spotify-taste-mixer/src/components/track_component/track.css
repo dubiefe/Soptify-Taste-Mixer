@@ -3,9 +3,10 @@
     align-items: center;
     gap: 1vh;
     width: 100%;
-    height: 10vh;
+    height: 8vh;
     box-sizing: border-box;
     padding: 1vh;
+    padding-right: 7vh;
     border-radius: 1vh;
     position: relative;
 }
@@ -23,8 +24,14 @@
     position: absolute;
     right: 0;
     cursor: pointer;
+    box-sizing: border-box;
+    padding: 2vh;
 }
 
-#track_container p, #track_container h2 {
-    font-size: 100%;
+#track_container h2 {
+    font-size: 1.4vh;
+}
+
+#track_container p {
+    font-size: 1.2vh;
 }
