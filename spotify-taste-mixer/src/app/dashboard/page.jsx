@@ -15,6 +15,7 @@ export default function PlaylistPage() {
     const [ selectedShows, setSelectedShows ] = useState([]);
     const [ playlist, setPlaylist ] = useState([]);
     const [ launchPlaylist, setLaunchPlaylist ] = useState(false);
+    const [ createPlaylistSpotify, setCreatePlaylistSpotify ] = useState(false)
     
     // Initialize favorites
     const [favorites, setFavorites] = useState(() => {
@@ -42,6 +43,64 @@ export default function PlaylistPage() {
         // Clean url
         window.history.replaceState({}, document.title, "/dashboard");
     }, []);
+
+    // Create playslit in Spotify
+    useEffect(() => {
+        if(!createPlaylistSpotify) return
+
+        async function createPlaylistWithRefresh() {
+            let res = await fetch(`/api/create_playlist?access_token=${accessToken}`);
+            if (res.status === 401) { // expired token
+                const refreshRes = await fetch("/api/refresh", {
+                    method: "POST",
+                    body: JSON.stringify({ refresh_token: refreshToken })
+                });
+                const refreshData = await refreshRes.json();
+                const newAccessToken = refreshData.access_token;
+                // Update Local Storage + useState
+                localStorage.setItem("access_token", JSON.stringify(newAccessToken));
+                setAccessToken(newAccessToken)
+                // Rerun search with new token
+                res = await fetch(`/api/create_playlist?access_token=${newAccessToken}`);
+            }
+            return res.json();
+        }
+
+        async function fillPlaylistWithRefresh(playlist_id, uris) {
+            let res = await fetch(`/api/fill_playlist?playlist_id=${playlist_id}&uris=${encodeURIComponent(JSON.stringify(uris))}&access_token=${accessToken}`);
+            if (res.status === 401) { // expired token
+                const refreshRes = await fetch("/api/refresh", {
+                    method: "POST",
+                    body: JSON.stringify({ refresh_token: refreshToken })
+                });
+                const refreshData = await refreshRes.json();
+                const newAccessToken = refreshData.access_token;
+                // Update Local Storage + useState
+                localStorage.setItem("access_token", JSON.stringify(newAccessToken));
+                setAccessToken(newAccessToken)
+                // Rerun search with new token
+                res = await fetch(`/api/fill_playlist?playlist_id=${playlist_id}&uris=${encodeURIComponent(JSON.stringify(uris))}&access_token=${newAccessToken}`);
+            }
+            return res.json();
+        }
+
+        async function addTracksToPlaylist() {
+            // Create array with all uris
+            let uris = [];
+            for (const track of playlist) {
+                uris.push(track.uri)
+            }
+            // Create the playlist and get the id
+            const playlistData = await createPlaylistWithRefresh();
+            // Fill the playlist
+            const result = await fillPlaylistWithRefresh(playlistData.id, uris);
+            console.log("Playlist created");
+        }
+
+        addTracksToPlaylist();
+        setCreatePlaylistSpotify(false);
+
+    }, [createPlaylistSpotify]);
 
     return (
         <>
@@ -85,7 +144,7 @@ export default function PlaylistPage() {
                                         setSelectedItems={setSelectedShows}/>
                         </fieldset>
                     </div>
-                    <button onClick={() => {setLaunchPlaylist(true)}}>
+                    <button onClick={() => {setLaunchPlaylist(true)}} title='Generate playlist'>
                         <img src="/play-fill.svg" alt="launch_playlist" />
                     </button>
                     <fieldset>
@@ -103,6 +162,14 @@ export default function PlaylistPage() {
                               selectedShows={selectedShows}
                               favorites={favorites}
                               setFavorites={setFavorites}/>
+                        <div id='options_playlist'>
+                            <button onClick={() => {setPlaylist([])}}>
+                                <img src="/arrow-clockwise.svg" alt="refresh" title='Refresh playlist'/>
+                            </button>
+                            <button onClick={() => {setCreatePlaylistSpotify(true)}}>
+                                <img src="/download.svg" alt="download" title='Download playlist'/>
+                            </button>
+                        </div>
                     </fieldset>
                 </div>
             }

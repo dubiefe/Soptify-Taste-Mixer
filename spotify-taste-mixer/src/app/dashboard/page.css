@@ -9,14 +9,15 @@
     height: 10vh;
 }
 
-#dashboard_container > button img {
+#dashboard_container > button img, #options_playlist button img  {
     height: 100%;
 }
 
 #dashboard_container > fieldset {
-    width: 25%;
+    width: 30%;
     height: 80vh;
-    margin-right: 10%;
+    margin-right: 5%;
+    position: relative;
 }
 
 #widgets_container {
@@ -24,9 +25,22 @@
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    width: 40%;
+    width: 50%;
     height: 80vh;
     gap: 5%;
+}
+
+#options_playlist {
+    position: absolute;
+    display: flex;
+    bottom: -8vh;
+    right: 0;
+    gap: 2vh;
+    height: 6.5vh;
+}
+
+#options_playlist button {
+    width: 6.5vh;
 }
 
 fieldset {

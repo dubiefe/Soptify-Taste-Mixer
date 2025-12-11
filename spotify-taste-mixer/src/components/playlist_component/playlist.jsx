@@ -38,7 +38,7 @@ export default function Playlist(props) {
            }
            // Adding tracks from selected artists
            if (props.selectedArtists && props.selectedArtists.length > 0) {
-                props.selectedArtists.forEach(async artist => {
+                for (const artist of props.selectedArtists) {
                     // Get the top songs of the artist
                     const result = await getWithRefresh("artist", artist.id, props.accessToken, props.refreshToken);
                     // Add two random songs from the selection
@@ -49,11 +49,11 @@ export default function Playlist(props) {
                     }
                     if (!newPlaylist.some(t => t.id === result.tracks[num1].id)) newPlaylist.push(result.tracks[num1])
                     if (!newPlaylist.some(t => t.id === result.tracks[num2].id)) newPlaylist.push(result.tracks[num2])
-                });
+                }
            }
            // Adding tracks from selected albums
            if (props.selectedAlbums && props.selectedAlbums.length > 0) {
-                props.selectedAlbums.forEach(async album => {
+                for (const album of props.selectedAlbums) {
                     // Get the tracks of the album
                     const result = await getWithRefresh("album", album.id, props.accessToken, props.refreshToken);
                     // Get two random tracks from the album
@@ -67,11 +67,11 @@ export default function Playlist(props) {
                     const secondTrack = await getWithRefresh("track", result.items[num2].id, props.accessToken, props.refreshToken)
                     if (!newPlaylist.some(t => t.id === firstTrack.id)) newPlaylist.push(firstTrack)
                     if (!newPlaylist.some(t => t.id === secondTrack.id)) newPlaylist.push(secondTrack)
-                });
+                }
            }
            // Adding episodes from selected shows
            if (props.selectedShows && props.selectedShows.length > 0) {
-                props.selectedShows.forEach(async show => {
+                for (const show of props.selectedShows) {
                     // Get the tracks of the album
                     const result = await getWithRefresh("show", show.id, props.accessToken, props.refreshToken);
                     // Get two random tracks from the album
@@ -83,13 +83,10 @@ export default function Playlist(props) {
                     // Add the episodes
                     if (!newPlaylist.some(t => t.id === result.items[num1].id)) newPlaylist.push(result.items[num1])
                     if (!newPlaylist.some(t => t.id === result.items[num2].id)) newPlaylist.push(result.items[num2])
-                });
+                }
            }
 
-           // shuffle playlist
-           newPlaylist.sort(function (a, b) {
-                return Math.random() - 0.5;
-           });
+           
            props.setPlaylist(newPlaylist);
         }
 
