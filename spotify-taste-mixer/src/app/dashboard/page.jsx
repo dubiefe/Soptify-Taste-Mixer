@@ -15,6 +15,17 @@ export default function PlaylistPage() {
     const [ selectedShows, setSelectedShows ] = useState([]);
     const [ playlist, setPlaylist ] = useState([]);
     const [ launchPlaylist, setLaunchPlaylist ] = useState(false);
+    
+    // Initialize favorites
+    const [favorites, setFavorites] = useState(() => {
+      const stored = localStorage.getItem('favorites');
+      return stored ? JSON.parse(stored).map(String) : [];
+    });
+
+    // Update favorites in Local Storage
+    useEffect(() => {
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+    }, [favorites]);
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -89,7 +100,9 @@ export default function PlaylistPage() {
                               selectedTracks={selectedTracks}
                               selectedArtists={selectedArtists}
                               selectedAlbums={selectedAlbums}
-                              selectedShows={selectedShows}/>
+                              selectedShows={selectedShows}
+                              favorites={favorites}
+                              setFavorites={setFavorites}/>
                     </fieldset>
                 </div>
             }

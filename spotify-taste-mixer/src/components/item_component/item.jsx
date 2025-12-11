@@ -22,7 +22,14 @@ export default function Item(props) {
                 {props.type == "track" && props.item?.artists && <p>{formatArtists(props.item.artists)}</p>}
                 {props.type == "album" && <p>{formatArtists(props.item.artists)}</p>}
             </div>
-            {props.disable == "true" && <img src="/x.svg" id='remove_item' alt='remove' onClick={props.onClickRemove}/>}
+            <div id='options_container'>
+                {props.favorite &&
+                    <svg onClick={props.onClickAddFavorite} id='add_favorite_item' xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill={props.isFavorite ? "lightcoral" : "white"} class="bi bi-heart-fill" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                    </svg>
+                }
+                {props.disable == "true" && <img src="/x.svg" id='remove_item' alt='remove' onClick={props.onClickRemove}/>}
+            </div>
         </div>
     )
 }

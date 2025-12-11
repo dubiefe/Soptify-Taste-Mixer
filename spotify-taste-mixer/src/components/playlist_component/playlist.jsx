@@ -28,8 +28,14 @@ export default function Playlist(props) {
         }
         
         async function runCreatePlaylist () {
+           // Create new playlist
+           let newPlaylist = [...props.playlist];
            // Adding selected tracks
-           if (props.selectedTracks) props.setPlaylist(prev => [...prev, ...props.selectedTracks])
+           if (props.selectedTracks && props.selectedTracks.length > 0) {
+                props.selectedTracks.forEach(track => {
+                    if (!newPlaylist.some(t => t.id === track.id)) newPlaylist.push(track)
+                });
+           }
            // Adding tracks from selected artists
            if (props.selectedArtists && props.selectedArtists.length > 0) {
                 props.selectedArtists.forEach(async artist => {
@@ -41,7 +47,8 @@ export default function Playlist(props) {
                     while (num2 === num1) {
                         num2 = Math.floor(Math.random() * result.tracks.length);
                     }
-                    props.setPlaylist(prev => [...prev, result.tracks[num1], result.tracks[num2]])
+                    if (!newPlaylist.some(t => t.id === result.tracks[num1].id)) newPlaylist.push(result.tracks[num1])
+                    if (!newPlaylist.some(t => t.id === result.tracks[num2].id)) newPlaylist.push(result.tracks[num2])
                 });
            }
            // Adding tracks from selected albums
@@ -58,7 +65,8 @@ export default function Playlist(props) {
                     // Get the tracks with another call to have them in the right format
                     const firstTrack = await getWithRefresh("track", result.items[num1].id, props.accessToken, props.refreshToken)
                     const secondTrack = await getWithRefresh("track", result.items[num2].id, props.accessToken, props.refreshToken)
-                    props.setPlaylist(prev => [...prev, firstTrack, secondTrack])
+                    if (!newPlaylist.some(t => t.id === firstTrack.id)) newPlaylist.push(firstTrack)
+                    if (!newPlaylist.some(t => t.id === secondTrack.id)) newPlaylist.push(secondTrack)
                 });
            }
            // Adding episodes from selected shows
@@ -73,9 +81,16 @@ export default function Playlist(props) {
                         num2 = Math.floor(Math.random() * result.items.length);
                     }
                     // Add the episodes
-                    props.setPlaylist(prev => [...prev, result.items[num1], result.items[num2]])
+                    if (!newPlaylist.some(t => t.id === result.items[num1].id)) newPlaylist.push(result.items[num1])
+                    if (!newPlaylist.some(t => t.id === result.items[num2].id)) newPlaylist.push(result.items[num2])
                 });
            }
+
+           // shuffle playlist
+           newPlaylist.sort(function (a, b) {
+                return Math.random() - 0.5;
+           });
+           props.setPlaylist(newPlaylist);
         }
 
         // Create playlist
@@ -94,15 +109,28 @@ export default function Playlist(props) {
         }
     }
 
+    function handleClickFavorite(newItem) {
+        if (!props.favorites.includes(newItem)) {
+            // add track
+            props.setFavorites(prev => [...prev, newItem]);
+        } else {
+            // remove track
+            props.setFavorites(prev => prev.filter(item => item !== newItem))
+        }
+    }
+
     return (
         <div id="items_select_container">
             <div id='playlist_tracks'>
                 {props.playlist && props.playlist.map((item) => {
-                    return <Item key={item.id} 
+                    return <Item key={item.uri} 
                                     disable="true"
                                     onClickRemove={() => {handleClickTrack(item)}}
                                     item={item}
-                                    type="track"/>
+                                    type="track"
+                                    favorite={true}
+                                    isFavorite={props.favorites.includes(String(item.id))}
+                                    onClickAddFavorite={() => {handleClickFavorite(String(item.id))}}/>
                 })}
             </div>
         </div>

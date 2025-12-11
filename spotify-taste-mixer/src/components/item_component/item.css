@@ -16,16 +16,31 @@
     cursor: pointer;
 }
 
-#item_container img {
+#item_container img, #item_container svg {
     height: 100%;
 }
 
-#item_container #remove_item {
+#item_container svg {
+    width: 25%;
+}
+
+#item_container #options_container {
+    display: flex;
     position: absolute;
     right: 0;
-    cursor: pointer;
+    height: 100%;
+    gap: 1vh;
     box-sizing: border-box;
     padding: 2vh;
+    padding-right: 0;
+}
+
+#item_container #add_favorite_item, #item_container #remove_item {
+    cursor: pointer;
+}
+
+#item_container #add_favorite_item:hover {
+    fill: lightcoral;
 }
 
 #item_container h2 {
