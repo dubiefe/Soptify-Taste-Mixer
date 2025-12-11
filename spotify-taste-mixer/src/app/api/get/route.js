@@ -35,6 +35,18 @@ export async function GET(req) {
 
     const data = await response.json();
     return NextResponse.json(data, { status: response.status });
+  } else if (type === "show") {
+    const response = await fetch(
+      `https://api.spotify.com/v1/${type}s/${id}/episodes`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    );
+
+    const data = await response.json();
+    return NextResponse.json(data, { status: response.status });
   } else {
     const response = await fetch(
       `https://api.spotify.com/v1/${type}s/${id}`,

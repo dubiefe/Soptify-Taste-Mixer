@@ -28,37 +28,57 @@ export default function Playlist(props) {
         }
         
         async function runCreatePlaylist () {
-           console.log("Adding selected tracks");
+           // Adding selected tracks
            if (props.selectedTracks) props.setPlaylist(prev => [...prev, ...props.selectedTracks])
-           console.log("Adding tracks from selected artists");
+           // Adding tracks from selected artists
            if (props.selectedArtists && props.selectedArtists.length > 0) {
                 props.selectedArtists.forEach(async artist => {
+                    // Get the top songs of the artist
                     const result = await getWithRefresh("artist", artist.id, props.accessToken, props.refreshToken);
-                    const num1 = Math.floor(Math.random() * 10);
+                    // Add two random songs from the selection
+                    const num1 = Math.floor(Math.random() * result.tracks.length);
                     let num2 = num1;
                     while (num2 === num1) {
-                        num2 = Math.floor(Math.random() * 10);
+                        num2 = Math.floor(Math.random() * result.tracks.length);
                     }
                     props.setPlaylist(prev => [...prev, result.tracks[num1], result.tracks[num2]])
                 });
            }
-           console.log("Adding tracks from selected albums");
+           // Adding tracks from selected albums
            if (props.selectedAlbums && props.selectedAlbums.length > 0) {
                 props.selectedAlbums.forEach(async album => {
+                    // Get the tracks of the album
                     const result = await getWithRefresh("album", album.id, props.accessToken, props.refreshToken);
-                    console.log(result.items)
+                    // Get two random tracks from the album
                     const num1 = Math.floor(Math.random() * result.items.length);
                     let num2 = num1;
                     while (num2 === num1) {
                         num2 = Math.floor(Math.random() * result.items.length);
                     }
+                    // Get the tracks with another call to have them in the right format
                     const firstTrack = await getWithRefresh("track", result.items[num1].id, props.accessToken, props.refreshToken)
                     const secondTrack = await getWithRefresh("track", result.items[num2].id, props.accessToken, props.refreshToken)
                     props.setPlaylist(prev => [...prev, firstTrack, secondTrack])
                 });
            }
+           // Adding episodes from selected shows
+           if (props.selectedShows && props.selectedShows.length > 0) {
+                props.selectedShows.forEach(async show => {
+                    // Get the tracks of the album
+                    const result = await getWithRefresh("show", show.id, props.accessToken, props.refreshToken);
+                    // Get two random tracks from the album
+                    const num1 = Math.floor(Math.random() * result.items.length);
+                    let num2 = num1;
+                    while (num2 === num1) {
+                        num2 = Math.floor(Math.random() * result.items.length);
+                    }
+                    // Add the episodes
+                    props.setPlaylist(prev => [...prev, result.items[num1], result.items[num2]])
+                });
+           }
         }
 
+        // Create playlist
         runCreatePlaylist();
         props.setLaunchPlaylist(false);
 
