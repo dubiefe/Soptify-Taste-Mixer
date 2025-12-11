@@ -15,13 +15,18 @@ export default function PlaylistPage() {
     const [ selectedShows, setSelectedShows ] = useState([]);
     const [ playlist, setPlaylist ] = useState([]);
     const [ launchPlaylist, setLaunchPlaylist ] = useState(false);
-    const [ createPlaylistSpotify, setCreatePlaylistSpotify ] = useState(false)
+    const [ createPlaylistSpotify, setCreatePlaylistSpotify ] = useState(false);
+    const [favorites, setFavorites] = useState([]);
     
     // Initialize favorites
-    const [favorites, setFavorites] = useState(() => {
-      const stored = localStorage.getItem('favorites');
-      return stored ? JSON.parse(stored).map(String) : [];
-    });
+    useEffect(() => {
+        if (typeof window === "undefined") return
+
+        const stored = localStorage.getItem("favorites");
+        if (stored) {
+            setFavorites(JSON.parse(stored).map(String));
+        }
+    }, []);
 
     // Update favorites in Local Storage
     useEffect(() => {
