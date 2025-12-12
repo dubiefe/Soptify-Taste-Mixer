@@ -114,61 +114,65 @@ export default function PlaylistPage() {
             {accessToken && 
                 <div id='dashboard_container'>
                     <div id='widgets_container'>
-                        <fieldset>
-                            <legend>&ensp;Tracks&ensp;</legend>
-                            <Items_Selector type="track"
-                                        accessToken={accessToken} 
-                                        setAccessToken={setAccessToken}
-                                        refreshToken={refreshToken} 
-                                        selectedItems={selectedTracks}
-                                        setSelectedItems={setSelectedTracks}
-                                        favorites={favorites}
-                                        setFavorites={setFavorites}/>
-                        </fieldset>
-                        <fieldset>
-                            <legend>&ensp;Favorites Tracks&ensp;</legend>
-                            <Favorites_Selector
-                                        accessToken={accessToken} 
-                                        setAccessToken={setAccessToken}
-                                        refreshToken={refreshToken} 
-                                        selectedItems={selectedFavoritesTracks}
-                                        setSelectedItems={setSelectedFavoritesTracks}
-                                        favorites={favorites}
-                                        setFavorites={setFavorites}/>
-                        </fieldset>
-                        <fieldset>
-                            <legend>&ensp;Artists&ensp;</legend>
-                            <Items_Selector type="artist"
-                                        accessToken={accessToken} 
-                                        setAccessToken={setAccessToken}
-                                        refreshToken={refreshToken} 
-                                        selectedItems={selectedArtists}
-                                        setSelectedItems={setSelectedArtists}/>
-                        </fieldset>
-                        <fieldset>
-                            <legend>&ensp;Albums&ensp;</legend>
-                            <Items_Selector type="album"
-                                        accessToken={accessToken} 
-                                        setAccessToken={setAccessToken}
-                                        refreshToken={refreshToken} 
-                                        selectedItems={selectedAlbums}
-                                        setSelectedItems={setSelectedAlbums}/>
-                        </fieldset>
-                        <fieldset>
-                            <legend>&ensp;Shows&ensp;</legend>
-                            <Items_Selector type="show"
-                                        accessToken={accessToken} 
-                                        setAccessToken={setAccessToken}
-                                        refreshToken={refreshToken} 
-                                        selectedItems={selectedShows}
-                                        setSelectedItems={setSelectedShows}/>
-                        </fieldset>
+                        <div id='first_line'>
+                            <fieldset>
+                                <legend>&ensp;Tracks ({selectedTracks.length})&ensp;</legend>
+                                <Items_Selector type="track"
+                                            accessToken={accessToken} 
+                                            setAccessToken={setAccessToken}
+                                            refreshToken={refreshToken} 
+                                            selectedItems={selectedTracks}
+                                            setSelectedItems={setSelectedTracks}
+                                            favorites={favorites}
+                                            setFavorites={setFavorites}/>
+                            </fieldset>
+                            <fieldset>
+                                <legend>&ensp;Favorites Tracks ({selectedFavoritesTracks.length})&ensp;</legend>
+                                <Favorites_Selector
+                                            accessToken={accessToken} 
+                                            setAccessToken={setAccessToken}
+                                            refreshToken={refreshToken} 
+                                            selectedItems={selectedFavoritesTracks}
+                                            setSelectedItems={setSelectedFavoritesTracks}
+                                            favorites={favorites}
+                                            setFavorites={setFavorites}/>
+                            </fieldset>
+                            <fieldset>
+                                <legend>&ensp;Artists ({selectedArtists.length})&ensp;</legend>
+                                <Items_Selector type="artist"
+                                            accessToken={accessToken} 
+                                            setAccessToken={setAccessToken}
+                                            refreshToken={refreshToken} 
+                                            selectedItems={selectedArtists}
+                                            setSelectedItems={setSelectedArtists}/>
+                            </fieldset>
+                        </div>
+                        <div id='second_line'>
+                            <fieldset>
+                                <legend>&ensp;Albums ({selectedAlbums.length})&ensp;</legend>
+                                <Items_Selector type="album"
+                                            accessToken={accessToken} 
+                                            setAccessToken={setAccessToken}
+                                            refreshToken={refreshToken} 
+                                            selectedItems={selectedAlbums}
+                                            setSelectedItems={setSelectedAlbums}/>
+                            </fieldset>
+                            <fieldset>
+                                <legend>&ensp;Shows ({selectedShows.length})&ensp;</legend>
+                                <Items_Selector type="show"
+                                            accessToken={accessToken} 
+                                            setAccessToken={setAccessToken}
+                                            refreshToken={refreshToken} 
+                                            selectedItems={selectedShows}
+                                            setSelectedItems={setSelectedShows}/>
+                            </fieldset>
+                        </div>
                     </div>
                     <button onClick={() => {setLaunchPlaylist(true)}} title='Generate playlist'>
                         <img src="/play-fill.svg" alt="launch_playlist" />
                     </button>
                     <fieldset>
-                        <legend>&ensp;Playlist&ensp;</legend>
+                        <legend>&ensp;Playlist ({playlist.length})&ensp;</legend>
                         <Playlist accessToken={accessToken} 
                               setAccessToken={setAccessToken}
                               refreshToken={refreshToken} 
