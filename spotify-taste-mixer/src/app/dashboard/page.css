@@ -38,6 +38,18 @@
     gap: 2vh;
 }
 
+#first_line > fieldset {
+    width: 35%;
+}
+
+#first_line > fieldset:last-of-type {
+    width: 30%;
+}
+
+#second_line fieldset {
+    width: 100%;
+}
+
 #options_playlist {
     position: absolute;
     display: flex;
@@ -56,7 +68,6 @@ fieldset {
     border-radius: 2vh;
     box-sizing: border-box;
     padding: 2vh;
-    width: 100%;
     height: 100%;
 }
 
