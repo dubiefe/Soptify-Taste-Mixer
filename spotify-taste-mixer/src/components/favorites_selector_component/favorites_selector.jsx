@@ -1,18 +1,17 @@
-import './items_selector.css'
+import './../items_selector_component/items_selector.css'
 import Item from '../item_component/item';
 import { useState, useEffect } from 'react'
 
-export default function Items_Selector(props) {
+export default function Favorites_Selector(props) {
 
     const [ search, setSearch ] = useState("");
-    const [ resultSearch, setResultSearch ] = useState([]);
+    const [ favoritesTracksObjects, setFavoritesTracksObjects ] = useState("");
 
     useEffect(() => {
+        if(!props.favorites) return 
 
-        if(search == "") return 
-
-        async function searchWithRefresh(query, type, accessToken, refreshToken) {
-            let res = await fetch(`/api/search?q=${encodeURIComponent(query)}&type=${type}&access_token=${accessToken}`);
+        async function getWithRefresh(type, id, accessToken, refreshToken) {
+            let res = await fetch(`/api/get?type=${type}&id=${id}&access_token=${accessToken}`);
             if (res.status === 401) { // expired token
                 const refreshRes = await fetch("/api/refresh", {
                     method: "POST",
@@ -24,23 +23,24 @@ export default function Items_Selector(props) {
                 localStorage.setItem("access_token", JSON.stringify(newAccessToken));
                 props.setAccessToken(newAccessToken)
                 // Rerun search with new token
-                res = await fetch(`/api/search?q=${encodeURIComponent(query)}&type=${type}&access_token=${newAccessToken}`);
+                res = await fetch(`/api/get?type=${type}&id=${id}&access_token=${newAccessToken}`);
             }
             return res.json();
         }
-        
-        async function runSearch () {
-            const result = await searchWithRefresh(search, props.type, props.accessToken, props.refreshToken)
 
-            if (props.type == "track") setResultSearch(result.tracks.items);  
-            if (props.type == "artist") setResultSearch(result.artists.items);
-            if (props.type == "album") setResultSearch(result.albums.items);
-            if (props.type == "show") setResultSearch(result.shows.items);
+        async function getFavoritesAsObjects() {
+            let newFavoritesObjects = [];
+            for (const fav of props.favorites) {
+                const trackObjects = await getWithRefresh("track", fav, props.accessToken, props.refreshToken)
+                newFavoritesObjects.push(trackObjects);
+            }
+
+            setFavoritesTracksObjects(newFavoritesObjects);
         }
 
-        runSearch();
+        getFavoritesAsObjects();
 
-    }, [search]);
+    }, [props.favorites]);
 
     function changeSearch(input) {
         setSearch(input.target.value);
@@ -52,7 +52,6 @@ export default function Items_Selector(props) {
             props.setSelectedItems(prev => [...prev, newItem]);
         } 
         setSearch("");
-        setResultSearch([]);
     }
 
     function handleClickTrackRemove(newItem) {
@@ -73,39 +72,29 @@ export default function Items_Selector(props) {
         <div id="items_select_container">
             <div id='search'>
                 <button disabled>
-                    {props.type == "track" && <img src="/music-note.svg" alt="tracks"/>}
-                    {props.type == "artist" && <img src="/person-fill.svg" alt="artists"/>}
-                    {props.type == "album" && <img src="/music-note-list.svg" alt="albums"/>}
-                    {props.type == "show" && <img src="/mic-fill.svg" alt="shows"/>}
+                    <img src="/heart-fill.svg" alt="favorites_tracks"/>
                 </button>
-                <input type="text" value={search} onChange={changeSearch} placeholder={"search for " + props.type + "s"}/>
-                {search && resultSearch && <div id='search_results'>
-                    {resultSearch.map((item) => {
+                <input type="text" value={search} onChange={changeSearch} placeholder="search for your favorites tracks"/>
+                {search && favoritesTracksObjects && <div id='search_results'>
+                    {favoritesTracksObjects.filter(fav => fav.name.toLowerCase().includes(search.toLowerCase())).map((item) => {
                         return <Item key={item.id} 
                                       disable="false"
                                       onClick={() => {handleClickTrack(item)}}
                                       item={item}
-                                      type={props.type}/>
+                                      type="track"/>
                     })}
                 </div>}
             </div>
             <div id='selected_tracks'>
-                {props.type == "track" && props.selectedItems && props.selectedItems.map((item) => {
+                {props.selectedItems && props.selectedItems.map((item) => {
                     return <Item key={item.id} 
                                   disable="true"
                                   onClickRemove={() => {handleClickTrackRemove(item)}}
                                   item={item}
-                                  type={props.type}
+                                  type="track"
                                   favorite={true}
                                   isFavorite={props.favorites.includes(String(item.id))}
                                   onClickAddFavorite={() => {handleClickFavorite(String(item.id))}}/>
-                })}
-                {props.type != "track" && props.selectedItems && props.selectedItems.map((item) => {
-                    return <Item key={item.id} 
-                                  disable="true"
-                                  onClickRemove={() => {handleClickTrack(item)}}
-                                  item={item}
-                                  type={props.type}/>
                 })}
             </div>
         </div>

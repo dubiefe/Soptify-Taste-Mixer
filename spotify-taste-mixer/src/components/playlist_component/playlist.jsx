@@ -36,6 +36,12 @@ export default function Playlist(props) {
                     if (!newPlaylist.some(t => t.id === track.id)) newPlaylist.push(track)
                 });
            }
+           // Adding selected favorites tracks
+           if (props.selectedFavoritesTracks && props.selectedFavoritesTracks.length > 0) {
+                props.selectedFavoritesTracks.forEach(track => {
+                    if (!newPlaylist.some(t => t.id === track.id)) newPlaylist.push(track)
+                });
+           }
            // Adding tracks from selected artists
            if (props.selectedArtists && props.selectedArtists.length > 0) {
                 for (const artist of props.selectedArtists) {

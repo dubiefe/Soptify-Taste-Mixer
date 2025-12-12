@@ -2,6 +2,7 @@
 
 import './page.css'
 import Items_Selector from '@/components/items_selector_component/items_selector';
+import Favorites_Selector from '@/components/favorites_selector_component/favorites_selector';
 import Playlist from '@/components/playlist_component/playlist';
 import { useState, useEffect } from "react"
 
@@ -10,13 +11,14 @@ export default function PlaylistPage() {
     const [ accessToken, setAccessToken ] = useState(null);
     const [ refreshToken, setRefreshToken ] = useState(null);
     const [ selectedTracks, setSelectedTracks ] = useState([]);
+    const [ selectedFavoritesTracks, setSelectedFavoritesTracks ] = useState([]);
     const [ selectedArtists, setSelectedArtists ] = useState([]);
     const [ selectedAlbums, setSelectedAlbums ] = useState([]);
     const [ selectedShows, setSelectedShows ] = useState([]);
     const [ playlist, setPlaylist ] = useState([]);
     const [ launchPlaylist, setLaunchPlaylist ] = useState(false);
     const [ createPlaylistSpotify, setCreatePlaylistSpotify ] = useState(false);
-    const [favorites, setFavorites] = useState([]);
+    const [ favorites, setFavorites ] = useState([]);
     
     // Initialize favorites
     useEffect(() => {
@@ -119,7 +121,20 @@ export default function PlaylistPage() {
                                         setAccessToken={setAccessToken}
                                         refreshToken={refreshToken} 
                                         selectedItems={selectedTracks}
-                                        setSelectedItems={setSelectedTracks}/>
+                                        setSelectedItems={setSelectedTracks}
+                                        favorites={favorites}
+                                        setFavorites={setFavorites}/>
+                        </fieldset>
+                        <fieldset>
+                            <legend>&ensp;Favorites Tracks&ensp;</legend>
+                            <Favorites_Selector
+                                        accessToken={accessToken} 
+                                        setAccessToken={setAccessToken}
+                                        refreshToken={refreshToken} 
+                                        selectedItems={selectedFavoritesTracks}
+                                        setSelectedItems={setSelectedFavoritesTracks}
+                                        favorites={favorites}
+                                        setFavorites={setFavorites}/>
                         </fieldset>
                         <fieldset>
                             <legend>&ensp;Artists&ensp;</legend>
@@ -162,6 +177,7 @@ export default function PlaylistPage() {
                               launchPlaylist={launchPlaylist}
                               setLaunchPlaylist={setLaunchPlaylist}
                               selectedTracks={selectedTracks}
+                              selectedFavoritesTracks={selectedFavoritesTracks}
                               selectedArtists={selectedArtists}
                               selectedAlbums={selectedAlbums}
                               selectedShows={selectedShows}
