@@ -18,3 +18,9 @@
 #christmas_button:hover {
   box-shadow: none;
 }
+
+@media (max-width: 1000px) {
+  #christmas_button {
+    width: 100%;
+  }
+}
