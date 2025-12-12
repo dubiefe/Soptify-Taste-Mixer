@@ -3,3 +3,18 @@
     height: 100%;
     overflow: auto;
 }
+
+#christmas_button {
+    background-color: rgba(228, 26, 26);
+    box-shadow: 0.5vh 0.5vh rgba(228, 26, 26, 0.5);
+    color: var(--white);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5%;
+    width: 80%;
+}
+
+#christmas_button:hover {
+  box-shadow: none;
+}

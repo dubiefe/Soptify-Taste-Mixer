@@ -23,7 +23,7 @@ export async function GET(req) {
 
     const data = await response.json();
     return NextResponse.json(data, { status: response.status });
-  } else if(type === "album") {
+  } else if(type === "album" || type === "playlist") {
     const response = await fetch(
       `https://api.spotify.com/v1/${type}s/${id}/tracks`,
       {

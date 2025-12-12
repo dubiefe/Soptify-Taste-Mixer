@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 
 export default function Playlist(props) {
 
-    console.log(props.playlist)
+    const [ addChristmasTouch, setAddChristmasTouch ] = useState(false);
 
     useEffect(() => {
         if(!props.launchPlaylist) return 
@@ -92,7 +92,6 @@ export default function Playlist(props) {
                 }
            }
 
-           
            props.setPlaylist(newPlaylist);
         }
 
@@ -101,6 +100,53 @@ export default function Playlist(props) {
         props.setLaunchPlaylist(false);
 
     }, [props.launchPlaylist]);
+
+    // Christmas touch
+    useEffect(() => {
+        if(!addChristmasTouch) return
+
+        async function getWithRefresh(type, id, accessToken, refreshToken) {
+            let res = await fetch(`/api/get?type=${type}&id=${id}&access_token=${accessToken}`);
+            if (res.status === 401) { // expired token
+                const refreshRes = await fetch("/api/refresh", {
+                    method: "POST",
+                    body: JSON.stringify({ refresh_token: refreshToken })
+                });
+                const refreshData = await refreshRes.json();
+                const newAccessToken = refreshData.access_token;
+                // Update Local Storage + useState
+                localStorage.setItem("access_token", JSON.stringify(newAccessToken));
+                props.setAccessToken(newAccessToken)
+                // Rerun search with new token
+                res = await fetch(`/api/get?type=${type}&id=${id}&access_token=${newAccessToken}`);
+            }
+            return res.json();
+        }
+
+        async function addChristmasTracks() {
+            let christmasTracks = [];
+            // Get the tracks of the album
+            const result = await getWithRefresh("playlist", "6w3jITQU1CPB2kPiT9mfxb", props.accessToken, props.refreshToken);
+            // Get two random tracks from the album
+            console.log(result)
+            const num1 = Math.floor(Math.random() * result.items.length);
+            let num2 = num1;
+            while (num2 === num1) {
+                num2 = Math.floor(Math.random() * result.items.length);
+            }
+            // Get the tracks with another call to have them in the right format
+            const firstTrack = await getWithRefresh("track", result.items[num1].track.id, props.accessToken, props.refreshToken)
+            const secondTrack = await getWithRefresh("track", result.items[num2].track.id, props.accessToken, props.refreshToken)
+            if (!props.playlist.some(t => t.id === firstTrack.id)) christmasTracks.push(firstTrack)
+            if (!props.playlist.some(t => t.id === secondTrack.id)) christmasTracks.push(secondTrack)
+
+            props.setPlaylist(prev => [...christmasTracks, ...prev]);
+        }
+
+        addChristmasTracks();
+        setAddChristmasTouch(false);
+
+    }, [addChristmasTouch])
 
     function handleClickTrack(newItem) {
         if (!props.playlist.includes(newItem)) {
@@ -124,6 +170,11 @@ export default function Playlist(props) {
 
     return (
         <div id="items_select_container">
+            <button id='christmas_button' onClick={() => {setAddChristmasTouch(true)}} title='Christmas Touch !'>
+                <img src="/snow2.svg" alt="christmas_touch"/>
+                Christmas Touch !
+                <img src="/snow2.svg" alt="christmas_touch"/>
+            </button>
             <div id='playlist_tracks'>
                 {props.playlist && props.playlist.map((item) => {
                     return <Item key={item.uri} 
