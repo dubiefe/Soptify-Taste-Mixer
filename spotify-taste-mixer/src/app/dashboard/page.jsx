@@ -4,6 +4,7 @@ import './page.css'
 import Items_Selector from '@/components/items_selector_component/items_selector';
 import Favorites_Selector from '@/components/favorites_selector_component/favorites_selector';
 import Playlist from '@/components/playlist_component/playlist';
+import Popup_Validation from '@/components/popup_validation_component/popup_validation';
 import { useState, useEffect } from "react"
 
 export default function PlaylistPage() {
@@ -19,6 +20,7 @@ export default function PlaylistPage() {
     const [ launchPlaylist, setLaunchPlaylist ] = useState(false);
     const [ createPlaylistSpotify, setCreatePlaylistSpotify ] = useState(false);
     const [ favorites, setFavorites ] = useState([]);
+    const [ openPopupValidation, setOpenPopupValidation ] = useState(false);
     
     // Initialize favorites
     useEffect(() => {
@@ -106,6 +108,7 @@ export default function PlaylistPage() {
 
         addTracksToPlaylist();
         setCreatePlaylistSpotify(false);
+        setOpenPopupValidation(true);
 
     }, [createPlaylistSpotify]);
 
@@ -198,7 +201,9 @@ export default function PlaylistPage() {
                     </fieldset>
                 </div>
             }
-
+            {openPopupValidation && 
+                <Popup_Validation onClick={() => {setOpenPopupValidation(false)}}/>
+            }
         </>
     )
 }
