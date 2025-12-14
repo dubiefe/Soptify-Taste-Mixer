@@ -26,3 +26,9 @@
 #login_container h2 {
   font-size: 1.75vh;
 }
+
+@media (max-width: 1000px) {
+  #login_container {
+    width: 40vh;
+  }
+}
