@@ -1,3 +1,12 @@
+/* Item_Selector 
+    Component to display widgets such as:
+        - tracks
+        - artists
+        - albums
+        - shows
+    The diplay depends on the given type if the widget
+*/
+
 import './items_selector.css'
 import Item from '../item_component/item';
 import { useState, useEffect } from 'react'
@@ -7,6 +16,7 @@ export default function Items_Selector(props) {
     const [ search, setSearch ] = useState("");
     const [ resultSearch, setResultSearch ] = useState([]);
 
+    // Run the search to obtain the spotify items
     useEffect(() => {
 
         if(search == "") return 
@@ -14,6 +24,7 @@ export default function Items_Selector(props) {
         async function searchWithRefresh(query, type, accessToken, refreshToken) {
             let res = await fetch(`/api/search?q=${encodeURIComponent(query)}&type=${type}&access_token=${accessToken}`);
             if (res.status === 401) { // expired token
+                // Fetch the new access token
                 const refreshRes = await fetch("/api/refresh", {
                     method: "POST",
                     body: JSON.stringify({ refresh_token: refreshToken })
@@ -31,7 +42,7 @@ export default function Items_Selector(props) {
         
         async function runSearch () {
             const result = await searchWithRefresh(search, props.type, props.accessToken, props.refreshToken)
-
+            // Get the right element from the result according to the type
             if (props.type == "track") setResultSearch(result.tracks.items);  
             if (props.type == "artist") setResultSearch(result.artists.items);
             if (props.type == "album") setResultSearch(result.albums.items);
@@ -42,29 +53,31 @@ export default function Items_Selector(props) {
 
     }, [search]);
 
+    // Function for the onChange of the search input
     function changeSearch(input) {
         setSearch(input.target.value);
     }
 
-    function handleClickTrack(newItem) {
-        if (!props.selectedItems.some(t => t.id === newItem.id)) {
-            // add track
+    
+    // Function to add an item to the selected list
+    function handleClickItem(newItem) {
+        if (!props.selectedItems.some(t => t.id === newItem.id)) { // add only if not in the list
+            // add item
             props.setSelectedItems(prev => [...prev, newItem]);
         } 
         setSearch("");
-        setResultSearch([]);
     }
 
-    function handleClickTrackRemove(newItem) {
+    // Function to remove the item from the list
+    function handleClickItemRemove(newItem) {
         props.setSelectedItems(prev => prev.filter(item => item.id !== newItem.id))
     }
 
+    // Function to add an item to the favorites' list
     function handleClickFavorite(newItem) {
-        if (!props.favorites.includes(newItem)) {
-            // add track
+        if (!props.favorites.includes(newItem)) { // if not in the list, add item
             props.setFavorites(prev => [...prev, newItem]);
-        } else {
-            // remove track
+        } else { // if in the list, remove item
             props.setFavorites(prev => prev.filter(item => item !== newItem))
         }
     }
@@ -83,7 +96,7 @@ export default function Items_Selector(props) {
                     {resultSearch.map((item) => {
                         return <Item key={item.id} 
                                       disable="false"
-                                      onClick={() => {handleClickTrack(item)}}
+                                      onClick={() => {handleClickItem(item)}}
                                       item={item}
                                       type={props.type}/>
                     })}
@@ -93,7 +106,7 @@ export default function Items_Selector(props) {
                 {props.type == "track" && props.selectedItems && props.selectedItems.map((item) => {
                     return <Item key={item.id} 
                                   disable="true"
-                                  onClickRemove={() => {handleClickTrackRemove(item)}}
+                                  onClickRemove={() => {handleClickItemRemove(item)}}
                                   item={item}
                                   type={props.type}
                                   favorite={true}
@@ -103,7 +116,7 @@ export default function Items_Selector(props) {
                 {props.type != "track" && props.selectedItems && props.selectedItems.map((item) => {
                     return <Item key={item.id} 
                                   disable="true"
-                                  onClickRemove={() => {handleClickTrack(item)}}
+                                  onClickRemove={() => {handleClickItemRemove(item)}}
                                   item={item}
                                   type={props.type}/>
                 })}

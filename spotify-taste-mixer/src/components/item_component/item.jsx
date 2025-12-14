@@ -1,7 +1,17 @@
+/* Item 
+    Component to display spotify items such as:
+        - tracks
+        - artists
+        - albums
+        - shows
+    The diplay depends on the given type if the item
+*/
 import './item.css'
 
 export default function Item(props) {
 
+    // Function to convert the artists' name from an array into a string
+    //  ["name1", "name2"] => "name1, name2"
     const formatArtists = (artists) => {
         let finalArtists = "";
         artists.map((artist) => {
@@ -24,8 +34,8 @@ export default function Item(props) {
             </div>
             <div id='options_container'>
                 {props.favorite &&
-                    <svg onClick={props.onClickAddFavorite} id='add_favorite_item' xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill={props.isFavorite ? "lightcoral" : "white"} class="bi bi-heart-fill" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                    <svg onClick={props.onClickAddFavorite} id='add_favorite_item' xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill={props.isFavorite ? "lightcoral" : "white"} className="bi bi-heart-fill" viewBox="0 0 16 16">
+                        <path fillRule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
                     </svg>
                 }
                 {props.disable == "true" && <img src="/x.svg" id='remove_item' alt='remove' onClick={props.onClickRemove}/>}

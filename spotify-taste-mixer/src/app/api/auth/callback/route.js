@@ -1,3 +1,7 @@
+/* API callback
+   This route fetch the tokens (access and refresh) thanks to the code obtained in the route login
+ */
+
 import { NextResponse } from "next/server";
 import { redirect } from "next/navigation";
 
@@ -6,6 +10,7 @@ const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
 const REDIRECT_URI = process.env.REDIRECT_URI;
 
 export async function GET(req) {
+  // Get the params in the url
   const url = new URL(req.url);
   const code = url.searchParams.get("code");
 
@@ -31,6 +36,6 @@ export async function GET(req) {
     return NextResponse.json(data, { status: 400 });
   }
 
-  // Redirection vers le frontend avec tokens en query params
+  // Redirect to the dashboard page with the tokens in the params
   redirect("/dashboard?access_token=" + data.access_token + "&refresh_token=" + data.refresh_token);
 }

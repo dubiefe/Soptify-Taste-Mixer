@@ -1,3 +1,7 @@
+/* Popup_Validation
+    Component to display a validation popup after the creation of the playlist in Spotify
+*/
+
 import './popup_validation.css'
 
 export default function Popup_Validation(props) {

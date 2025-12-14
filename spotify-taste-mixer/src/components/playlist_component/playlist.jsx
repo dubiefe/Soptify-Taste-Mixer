@@ -1,3 +1,7 @@
+/* Playlist
+    Component to create the playlist according to the widgets' selection
+*/
+
 import './playlist.css'
 import Item from '../item_component/item';
 import { useState, useEffect } from 'react'
@@ -6,12 +10,20 @@ export default function Playlist(props) {
 
     const [ addChristmasTouch, setAddChristmasTouch ] = useState(false);
 
+    // Function to get two random tracks from an array of tracks
+    function getRandomTracks(arr) {
+        const shuffled = [...arr].sort(() => 0.5 - Math.random());
+        return shuffled.slice(0, 2);
+    }
+
     useEffect(() => {
         if(!props.launchPlaylist) return 
 
+        // Function to get the items with refresh if needed
         async function getWithRefresh(type, id, accessToken, refreshToken) {
             let res = await fetch(`/api/get?type=${type}&id=${id}&access_token=${accessToken}`);
             if (res.status === 401) { // expired token
+                // Fetch the new access token
                 const refreshRes = await fetch("/api/refresh", {
                     method: "POST",
                     body: JSON.stringify({ refresh_token: refreshToken })
@@ -27,18 +39,19 @@ export default function Playlist(props) {
             return res.json();
         }
         
+        // Function to create the playlist according to the widgets' selection
         async function runCreatePlaylist () {
-           // Create new playlist
+           // Create new playlist based on the previous one
            let newPlaylist = [...props.playlist];
            // Adding selected tracks
            if (props.selectedTracks && props.selectedTracks.length > 0) {
-                props.selectedTracks.forEach(track => {
+                props.selectedTracks.forEach(track => { // only add if not in the playlist
                     if (!newPlaylist.some(t => t.id === track.id)) newPlaylist.push(track)
                 });
            }
            // Adding selected favorites tracks
            if (props.selectedFavoritesTracks && props.selectedFavoritesTracks.length > 0) {
-                props.selectedFavoritesTracks.forEach(track => {
+                props.selectedFavoritesTracks.forEach(track => { // only add if not in the playlist
                     if (!newPlaylist.some(t => t.id === track.id)) newPlaylist.push(track)
                 });
            }
@@ -48,13 +61,9 @@ export default function Playlist(props) {
                     // Get the top songs of the artist
                     const result = await getWithRefresh("artist", artist.id, props.accessToken, props.refreshToken);
                     // Add two random songs from the selection
-                    const num1 = Math.floor(Math.random() * result.tracks.length);
-                    let num2 = num1;
-                    while (num2 === num1) {
-                        num2 = Math.floor(Math.random() * result.tracks.length);
-                    }
-                    if (!newPlaylist.some(t => t.id === result.tracks[num1].id)) newPlaylist.push(result.tracks[num1])
-                    if (!newPlaylist.some(t => t.id === result.tracks[num2].id)) newPlaylist.push(result.tracks[num2])
+                    const randomTracks = getRandomTracks(result.tracks);
+                    if (!newPlaylist.some(t => t.id === randomTracks[0].id)) newPlaylist.push(randomTracks[0])
+                    if (!newPlaylist.some(t => t.id === randomTracks[1].id)) newPlaylist.push(randomTracks[1])
                 }
            }
            // Adding tracks from selected albums
@@ -63,14 +72,10 @@ export default function Playlist(props) {
                     // Get the tracks of the album
                     const result = await getWithRefresh("album", album.id, props.accessToken, props.refreshToken);
                     // Get two random tracks from the album
-                    const num1 = Math.floor(Math.random() * result.items.length);
-                    let num2 = num1;
-                    while (num2 === num1) {
-                        num2 = Math.floor(Math.random() * result.items.length);
-                    }
+                    const randomTracks = getRandomTracks(result.items);
                     // Get the tracks with another call to have them in the right format
-                    const firstTrack = await getWithRefresh("track", result.items[num1].id, props.accessToken, props.refreshToken)
-                    const secondTrack = await getWithRefresh("track", result.items[num2].id, props.accessToken, props.refreshToken)
+                    const firstTrack = await getWithRefresh("track", randomTracks[0].id, props.accessToken, props.refreshToken)
+                    const secondTrack = await getWithRefresh("track", randomTracks[1].id, props.accessToken, props.refreshToken)
                     if (!newPlaylist.some(t => t.id === firstTrack.id)) newPlaylist.push(firstTrack)
                     if (!newPlaylist.some(t => t.id === secondTrack.id)) newPlaylist.push(secondTrack)
                 }
@@ -78,20 +83,16 @@ export default function Playlist(props) {
            // Adding episodes from selected shows
            if (props.selectedShows && props.selectedShows.length > 0) {
                 for (const show of props.selectedShows) {
-                    // Get the tracks of the album
+                    // Get the episodes of the show
                     const result = await getWithRefresh("show", show.id, props.accessToken, props.refreshToken);
-                    // Get two random tracks from the album
-                    const num1 = Math.floor(Math.random() * result.items.length);
-                    let num2 = num1;
-                    while (num2 === num1) {
-                        num2 = Math.floor(Math.random() * result.items.length);
-                    }
+                    // Get two random episode from the show
+                    const randomEpisodes = getRandomTracks(result.items);
                     // Add the episodes
-                    if (!newPlaylist.some(t => t.id === result.items[num1].id)) newPlaylist.push(result.items[num1])
-                    if (!newPlaylist.some(t => t.id === result.items[num2].id)) newPlaylist.push(result.items[num2])
+                    if (!newPlaylist.some(t => t.id === randomEpisodes[0].id)) newPlaylist.push(randomEpisodes[0])
+                    if (!newPlaylist.some(t => t.id === randomEpisodes[1].id)) newPlaylist.push(randomEpisodes[1])
                 }
            }
-
+           // Set the new playlist in the variable
            props.setPlaylist(newPlaylist);
         }
 
@@ -125,21 +126,16 @@ export default function Playlist(props) {
 
         async function addChristmasTracks() {
             let christmasTracks = [];
-            // Get the tracks of the album
+            // Get the tracks of the christmas playlist
             const result = await getWithRefresh("playlist", "6w3jITQU1CPB2kPiT9mfxb", props.accessToken, props.refreshToken);
-            // Get two random tracks from the album
-            console.log(result)
-            const num1 = Math.floor(Math.random() * result.items.length);
-            let num2 = num1;
-            while (num2 === num1) {
-                num2 = Math.floor(Math.random() * result.items.length);
-            }
+            // Get two random tracks from the playlist
+            const randomTracks = getRandomTracks(result.items);
             // Get the tracks with another call to have them in the right format
-            const firstTrack = await getWithRefresh("track", result.items[num1].track.id, props.accessToken, props.refreshToken)
-            const secondTrack = await getWithRefresh("track", result.items[num2].track.id, props.accessToken, props.refreshToken)
+            const firstTrack = await getWithRefresh("track", randomTracks[0].track.id, props.accessToken, props.refreshToken)
+            const secondTrack = await getWithRefresh("track", randomTracks[1].track.id, props.accessToken, props.refreshToken)
             if (!props.playlist.some(t => t.id === firstTrack.id)) christmasTracks.push(firstTrack)
             if (!props.playlist.some(t => t.id === secondTrack.id)) christmasTracks.push(secondTrack)
-
+            // Add the tracks to the playlist
             props.setPlaylist(prev => [...christmasTracks, ...prev]);
         }
 
@@ -148,22 +144,18 @@ export default function Playlist(props) {
 
     }, [addChristmasTouch])
 
+    // Function to remove the track from the playlist
     function handleClickTrack(newItem) {
-        if (!props.playlist.includes(newItem)) {
-            // add track
-            props.setPlaylist(prev => [...prev, newItem]);
-        } else {
-            // remove track
+        if (props.playlist.includes(newItem)) { // if in the playlist, remove track
             props.setPlaylist(prev => prev.filter(item => item !== newItem))
         }
     }
 
+    // Function to add / remove the track to the favorites
     function handleClickFavorite(newItem) {
-        if (!props.favorites.includes(newItem)) {
-            // add track
+        if (!props.favorites.includes(newItem)) { // if not in favorites' list, add track
             props.setFavorites(prev => [...prev, newItem]);
-        } else {
-            // remove track
+        } else { // if in favorites' list, remove track
             props.setFavorites(prev => prev.filter(item => item !== newItem))
         }
     }

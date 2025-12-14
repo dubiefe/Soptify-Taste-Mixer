@@ -1,3 +1,7 @@
+/* Navbar
+    Component to display a navigation menu in the app
+*/
+
 import Link from 'next/link'
 import './navbar.css'
 

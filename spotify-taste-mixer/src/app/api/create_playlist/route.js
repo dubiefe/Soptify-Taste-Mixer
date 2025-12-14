@@ -1,14 +1,21 @@
+/* API create_playlist
+   This route create a playlist in the account of the connected user and return the ID of the new playlist
+ */
+
 import { NextResponse } from "next/server";
 
 export async function GET(req) {
+
     const url = new URL(req.url);
 
+    // Get the access token in the params
     const accessToken = url.searchParams.get("access_token");
 
     if (!accessToken) {
         return NextResponse.json({ error: "Missing access_token" }, { status: 401 });
     }
 
+    // Get the user ID to create the playlist
     const userResponse = await fetch(
     `https://api.spotify.com/v1/me`,
         {
@@ -17,9 +24,9 @@ export async function GET(req) {
             }
         }
     );
-
     const userData = await userResponse.json();
 
+    // Create the playlist
     const playlistResponse = await fetch(`https://api.spotify.com/v1/users/${userData.id}/playlists`, {
         method: "POST",
         headers: {
@@ -32,8 +39,8 @@ export async function GET(req) {
             public: false
         })
     });
-
     const playlistData = await playlistResponse.json();
 
+    // Return the result of the request containing the playlist ID
     return NextResponse.json(playlistData, { status: playlistResponse.status });
 }
