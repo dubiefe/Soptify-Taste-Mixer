@@ -29,6 +29,9 @@
 
 @media (max-width: 1000px) {
   #login_container {
-    width: 40vh;
+    width: 30vh;
+    height: 60vh;
+    padding-left: 4vh;
+    padding-right: 4vh;
   }
 }
